@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>破碎情书</title>
+    </head>
+        <style type="text/css">
+            body {
+                background-color:#f8e9e6;
+                margin: 0;
+                padding: 0;
+                text-align: center;
+                overflow: hidden;
+                font-family: KaiTi;
+                touch-action: none;
+            }
+            #wwhh{
+                position: fixed;
+                text-align: center;
+                display: none;
+            }
+        </style>
+	<body>
+        <div class="view" id="mainn">
+            <div id ="wwhh">
+                <button id="bt1" onclick="start()">拼</button>
+                <button id="bt2" onclick="boom(0)">拆</button>
+                <button id="bt2" onclick="boom(1)">拆</button>
+                <button id="bt2" onclick="boom(2)">拆</button>
+                <button id="bt2" onclick="boom(3)">拆</button>
+                <button id="bt2" onclick="boom(4)">拆</button>
+                <button id="bt2" onclick="boom(5)">拆</button>
+                <button id="bt2" onclick="boom(6)">拆</button>
+                <button id="bt2" onclick="boom(7)">拆</button>
+                <button id="bt2" onclick="booom(23)">拆</button>
+                <button id="bt3" onclick="miix()">合</button>
+                <input type="text" id="mytext" value="你大爷">
+            </div>
+            <canvas id="cas" style=" background-color:#000000">Your Browser is Too Young</canvas>
+        </div>
+		<script src="turbo.js" ></script>
+        <script>
+            // Create the canvas
+            var div = document.getElementById("mainn");
+            var canvas=document.getElementById("cas");
+            var ctx = canvas.getContext("2d");
+            var wwidth = window.innerWidth;
+            var hheight = window.innerHeight;
+            var canvasf =document.createElement("canvas");
+            var ctxf =canvasf.getContext("2d");
+            canvasf.width = 1080;
+            canvasf.height = 900;
+            if(3*wwidth > 2*hheight)
+            {
+                wwidth = hheight*2/3;
+            }
+            var ratio0 =1080/wwidth; //screen width
+            canvas.style.width=wwidth+'px';
+            canvas.style.height=hheight+'px';
+            canvas.width = wwidth*ratio0;
+            canvas.height = hheight*ratio0;
+            document.body.appendChild(canvas);
+
+            var progess = 0 ;
+            var srcNum = 0 ;
+            
+            var bgm = new Audio();
+            bgm.loop = true;
+            bgm.src = "music/银临 - 卑微情书（伴奏）.mp3";
+            bgm.volume = 0.4;
+            bgm.play();
+            var derr = new Audio();
+            var denn = new Audio();
+            derr.src = "music/denn.mp3"
+            denn.src = "music/dee.mp3"
+            denn.volume = 0.7;
+            // Background image
+            var bgImage =new Image();
+            loadimg(bgImage,"images/background.png");
+            // Hero image
+            var heroImage =new Image();
+            loadimg(heroImage,"images/hero.png");
+            // Monster image
+            var monsterImage =new Image();
+            loadimg(monsterImage,"images/monster.png");
+
+            var bgg =new Image();
+            loadimg(bgg,"images/bgg.jpg");
+            var flw =new Array();
+            for(i=0;i<9;i++){
+                flw[i] = new Image();
+            }
+            loadimg(flw[8],"images/f0.png");
+            loadimg(flw[7],"images/f1.png");
+            loadimg(flw[6],"images/f2.png");
+            loadimg(flw[5],"images/f3.png");
+            loadimg(flw[4],"images/f4.png");
+            loadimg(flw[3],"images/f5.png");
+            loadimg(flw[2],"images/f6.png");
+            loadimg(flw[1],"images/f7.png");
+            loadimg(flw[0],"images/f8.png");
+
+
+            // Game objects
+            var winkyAgo = {
+                number : 0 ,
+                alpha : 0 ,
+            } ;
+            var winkyNow = {
+                number : 0 ,
+                alpha : 1 ,
+            } ;
+            var itsTime = 0;
+            var hero = {
+                speed: 256 // movement in pixels per second
+            };
+            var monster = {};
+            var monstersCaught = 0;
+            var whh=0;
+            var text =document.getElementById("mytext").value;
+            var winky =new  Array("流光淌过空寂的岁月长河","只肯在你身侧","驻足片刻",
+            "星光辗转千万光年的跋涉","勾勒花月与暮色",
+            "你自值得","我寻遍世上的诗歌","将凡尘唱彻");
+            function groy() {
+                this.alpha = 1;
+                this.visiable = true;
+                this.white = 0;
+                this.undetected = true;
+                this.are;
+            }
+            var fontArea ={};
+            function area() {
+                this.data = new Array();
+                this.width
+                this.height
+                this.gx
+                this.gy
+                this.gr 
+                this.cls
+                this.x = Math.random()*(canvas.width*2);
+                this.y = Math.random()*(canvas.height*3);
+                this.r = Math.random()*1800-1200;
+            };
+            var keysDown = {};
+            var clickPos =[0,0,false];
+
+            var areas = new Array();
+            var radicals = new Array();
+            var canvass = new Array();
+            var ctxs = new Array();
+            var grays = new Array();
+                for(i=0;i<canvas.width;i++){
+                    grays[i]= new Array();
+                    for(j=0;j<canvas.height;j++){
+                        grays[i][j]= new groy();
+                    }
+                }
+            var clssb = new Array();
+            addEventListener("keydown", function (e) {
+                keysDown[e.keyCode] = true;
+            }, false);
+
+            addEventListener("keyup", function (e) {
+                delete keysDown[e.keyCode];
+            }, false);
+            
+            window.ontouchstart =function(e){
+                clickPos[0] = e.touches[0].clientX;
+                clickPos[1] = e.touches[0].clientY;
+                clickPos[2] = true ;
+            }
+            
+            window.ontouchend = function(){
+                clickPos[2] =false ;
+                if ((clickPos[0]< window.innerWidth/2)
+                    &&(clickPos[1]*ratio0>((canvas.height-canvasf.height)/4*3)+200)
+                    &&(clickPos[1]*ratio0<((canvas.height-canvasf.height)/4*3+1000))){
+                miix();
+                }
+                else if(clickPos[0]> window.innerWidth-200){
+                    booom(clickPos[1]*ratio0/canvas.height*100);
+                }
+                else if (clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+60){
+                    booom(clickPos[1]*ratio0/canvas.height*100);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+160){
+                    boom(0);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+260){
+                    boom(1);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+360){
+                    boom(2);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+460){
+                    boom(3);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+560){
+                    boom(4);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+660){
+                    boom(5);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+760){
+                    boom(6);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+860){
+                    boom(7);
+                }
+                else {
+                    booom(clickPos[1]*ratio0/canvas.height*100)
+                }
+            }
+            window.onmousedown = function(e){
+                clickPos[0] = e.clientX;
+                clickPos[1]  = e.clientY;
+                clickPos[2]= true;
+                if ((clickPos[0]< window.innerWidth/2)
+                    &&(clickPos[1]*ratio0>((canvas.height-canvasf.height)/4*3)+200)
+                    &&(clickPos[1]*ratio0<((canvas.height-canvasf.height)/4*3+1000))){
+                miix();
+                }
+                else if (clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+60){
+                    booom(clickPos[1]*ratio0/canvas.height*100);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+160){
+                    boom(0);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+260){
+                    boom(1);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+360){
+                    boom(2);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+460){
+                    boom(3);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+560){
+                    boom(4);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+660){
+                    boom(5);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+760){
+                    boom(6);
+                }
+                else if(clickPos[1]*ratio0 < (canvas.height-canvasf.height)/2+860){
+                    boom(7);
+                }
+                else {
+                    booom(clickPos[1]*ratio0/canvas.height*100)
+                }
+            }
+            window.onmouseup = function(){
+                clickPos[2]= false;
+                // booom();
+            }
+
+
+
+            // The main game loop
+            var main = function () {
+                var now = Date.now();
+                var delta = now - then;
+
+                update(delta / 1000);
+                render();
+                itsTime++;
+                then = now;
+
+                // Request to do this again ASAP
+                requestAnimationFrame(main);
+            };
+
+            // Cross-browser support for requestAnimationFrame
+            var w = window;
+            requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
+
+            // Let's play this game!
+            var then = Date.now();
+            // reset();
+            // main();
+
+
+        </script>
+	</body>
+</html>
