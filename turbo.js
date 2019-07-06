@@ -71,7 +71,7 @@ function loadimg(imgg,srcc){
         // ctx.font = "200px FangSong";
         ctx.font = "100px Helvetica";
         ctx.fillText("Loading . . .",230,600);
-        ctx.fillRect(0,canvas.height/2-20,canvas.width*(progess/5),40);
+        ctx.fillRect(0,canvas.height/2-20,canvas.width*(progess/srcNum),40);
         if(progess==srcNum)
             { 
                 //document.getElementById("wwhh").style.display='inline';
