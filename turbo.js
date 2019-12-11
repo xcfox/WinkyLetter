@@ -69,7 +69,7 @@ function loadimg(imgg, srcc) {
         ctx.fillStyle = "#585858";
         // ctx.font = "200px FangSong";
         ctx.font = "70px Helvetica";
-        ctx.fillText("To  LPN", 330, 600);
+        //ctx.fillText("To  LPN", 330, 600);
         ctx.font = "100px Helvetica";
         ctx.fillText("Loading . . .", 230, 1500);
         ctx.fillRect(0, canvas.height / 2 - 20, canvas.width * (progess / srcNum), 40);
